@@ -183,7 +183,7 @@ public class Rooms {
                 if (answer.equals("y")) {
                     SimpleRPG.updateScreen();
 
-                    System.out.println("       [Магазин]");
+                    System.out.println("                                    [Магазин]               Мешок с золотом: " + SimpleRPG.gold);
                     int loot = random.nextInt(SimpleRPG.weapon_names.length);
                     int temp_lvl = SimpleRPG.checkDifficult() * (random.nextInt(2) + 1);
                     int temp_dmg = random.nextInt(SimpleRPG.weapon_stats[loot]) + 1 + temp_lvl;
