@@ -1115,42 +1115,110 @@ public class SimpleRPG {
             if(answer == 1){
 
                 System.out.println("Выберите новую экипировку.");
+                System.out.println("Выберите новую экипировку.");
+                System.out.println("          ОРУЖИЯ");
                 showWeapons();
+                System.out.println("           ЩИТЫ");
+                showShields();
                 enter();
                 int gh = 0;
                 int hg = 0;
-                int select = Integer.parseInt(reader.readLine()) - 1;
+                int gg = 0;
+                int ggg = 0;
+                String selects = reader.readLine();
+                String[] selects1 = selects.split(" ");
+                int select = Integer.parseInt(selects1[0]) - 1;
+                int select2;
+                try {
+                    select2 = Integer.parseInt(selects1[1]);
+                } catch (Exception e) {
+                    select2 = 0;
+                }
+                System.out.println(select + " " + select2);
                 updateScreen();
-                for(int r = 0; r < 3; r++) {
-                    if (weapon_name[select] == equipped[r]) {
-                        if(weapon_ids[select] == weapon_id[r]) {
-                            equipped[r] = "null";
-                            hero_dmg[r] = 1;
-                            weapon_id[r] = 0;
-                            equipped[thisHero] = weapon_name[select];
-                            hero_dmg[thisHero] = weapon_dmg[select];
-                            weapon_id[thisHero] = weapon_ids[select];
-                            type_eq[thisHero] = type[select];
-                            type_eq[r] = "Ближний";
-                            turns[thisHero] = 1;
-                            System.out.println("Для героя " + hero_name[thisHero] + " установлено оружие " + equipped[thisHero] + " | урон [" + hero_dmg[thisHero] + "]");
+                if(!weapon_name[select].equals("null") || select >= 1 && select <= 6) {
+                    if(weapon_class[select].equals(hero_class[thisHero])) {
+                        for (int r = 0; r < 3; r++) {
+                            if (Objects.equals(weapon_name[select], equipped[r])) {
+                                if (weapon_ids[select] == weapon_id[r]) {
+                                    equipped[r] = "null";
+                                    type_eq[r] = "Ближний";
+                                    hero_dmg[r] = 1;
+                                    weapon_id[r] = 0;
+                                    weapon_class_e[r] = "Внеклассовое";
+                                    equipped[thisHero] = weapon_name[select];
+                                    weapon_class_e[thisHero] = weapon_class[select];
+                                    hero_dmg[thisHero] = weapon_dmg[select];
+                                    weapon_id[thisHero] = weapon_ids[select];
+                                    type_eq[thisHero] = type[select];
+                                    turns[thisHero] = 1;
+                                    System.out.println("Для героя " + hero_name[thisHero] + " установлено оружие " + equipped[thisHero] + " | урон [" + hero_dmg[thisHero] + "]");
+                                    hg = 1;
+                                }
+                            } else {
+                                gh = 1;
+                            }
                         }
-                        hg = 1;
+                        if (gh == 1) {
+                            if (hg != 1) {
+                                equipped[thisHero] = weapon_name[select];
+                                hero_dmg[thisHero] = weapon_dmg[select];
+                                weapon_id[thisHero] = weapon_ids[select];
+                                weapon_class_e[thisHero] = weapon_class[select];
+                                type_eq[thisHero] = type[select];
+                                turns[thisHero] = 1;
+                                System.out.println("Для героя " + hero_name[thisHero] + " установлено оружие " + equipped[thisHero] + " | урон [" + hero_dmg[thisHero] + "]");
+                            }
+                        }
                     } else {
-                        gh = 1;
+                        System.out.println("Этот герой не может использовать оружие другого класса.");
+                    }
+                } else {
+                    System.out.println("Укажите имеющееся оружие!");
+                }
+
+                if(select2 != 0) {
+                    select2--;
+                    for (int t = 0; t < 3; t++) {
+                        if (Objects.equals(shield_name[select2], equipped_shields[t])) {
+                            if (shield_ids[select2] == shield_id[t]) {
+                                equipped_shields[t] = "null";
+                                shield_hp[select2] = shield_hp_e[t];
+                                hero_shield[t] = 1 + hero_lvl[t];
+                                shield_id[t] = 0;
+                                shield_hp_e[thisHero] = shield_hp[select2];
+                                equipped_shields[thisHero] = shield_name[select2];
+                                shield_def[thisHero] = shield_stat[select2];
+                                shield_id[thisHero] = shield_ids[select2];
+                                turns[thisHero] = 1;
+                                System.out.println("Для героя " + hero_name[thisHero] + " установлен щит " + equipped_shields[thisHero] + " | Защита [" + shield_def[thisHero] + "]");
+                                ggg = 1;
+                            }
+                        } else {
+                            gg = 1;
+                        }
                     }
                 }
-                if(gh == 1) {
-                    if(hg != 1) {
-                        equipped[thisHero] = weapon_name[select];
-                        hero_dmg[thisHero] = weapon_dmg[select];
-                        weapon_id[thisHero] = weapon_ids[select];
-                        type_eq[thisHero] = type[select];
+
+                if(gg == 1) {
+                    if(ggg != 1) {
+                        if(equipped_shields[thisHero] != "null") {
+                            for(int y = 0; y < 4; y++) {
+                                if(shield_ids[y] ==  shield_id[thisHero]) {
+                                    shield_hp[y] = shield_hp_e[thisHero];
+                                }
+                            }
+                        }
+                        equipped_shields[thisHero] = shield_name[select2];
+                        shield_hp_e[thisHero] = shield_hp[select2];
+                        shield_def[thisHero] = shield_stat[select2];
+                        shield_id[thisHero] = shield_ids[select2];
                         turns[thisHero] = 1;
-                        System.out.println("Для героя " + hero_name[thisHero] + " установлено оружие " + equipped[thisHero] + " | урон [" + hero_dmg[thisHero] + "]");
+                        System.out.println("Для героя " + hero_name[thisHero] + " установлен щит " + equipped_shields[thisHero] + " | Защита [" + shield_def[thisHero] + "]");
                     }
                 }
                 selectMenu();
+
             } else {
                 selectMenu();
             }
