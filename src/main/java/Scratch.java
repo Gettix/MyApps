@@ -64,13 +64,7 @@ class Scratch {
 
     public static void menu() throws IOException {
 
-        String inputFileName = "C:\\Users\\tonni\\AppData\\Roaming\\JetBrains\\IdeaIC2022.2\\scratches\\settings.txt";
-        BufferedReader settingsReader = new BufferedReader(new FileReader(inputFileName));
-        String line;
         int difficult = 2;
-        while ((line = settingsReader.readLine()) != null) {
-            difficult = Integer.parseInt(line);
-        }
 
         System.out.println(
                 "    " + "Меню:" + n

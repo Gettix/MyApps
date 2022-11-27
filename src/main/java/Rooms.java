@@ -11,6 +11,15 @@ public class Rooms {
         int room_id = random.nextInt(1);
         int event;
         SimpleRPG.room_count++;
+        int grats = 0;
+        String cnt = "" + SimpleRPG.room_count;
+        String[] spt = cnt.split("");
+        if(spt.length == 2) {
+            if (spt[1].equals("0")) {
+                SimpleRPG.scores++;
+                grats = 1;
+            }
+        }
 
 
         SimpleRPG.updateScreen();
@@ -18,12 +27,12 @@ public class Rooms {
 
         System.out.println("Вы спускаетесь ниже в подземелье...");
 
-        TimeUnit.SECONDS.sleep(2);
+        TimeUnit.SECONDS.sleep(1);
 
         //todo Изменить значение room_id (nextInt) на 2 или 3
         int money = 0;
         if (room_id == 0) {
-            event = random.nextInt(4);
+            event = random.nextInt(5);
             int dif = SimpleRPG.checkDifficult();
 
             SimpleRPG.updateScreen();
@@ -38,6 +47,7 @@ public class Rooms {
                     SimpleRPG.enemy_dmg[0] = (int) a[3];
                     SimpleRPG.enemy[0] = 1;
                     SimpleRPG.enemy_lvl[0] = (int) a[4];
+                    SimpleRPG.enemy_effect[0] = (String) a[5];
 
                     System.out.println("Вы шли по тусклому тоннелю и набрели на " + SimpleRPG.enemy_name[0]);
                     SimpleRPG.inFight = 1;
@@ -51,6 +61,7 @@ public class Rooms {
                     SimpleRPG.enemy_dmg[0] = (int) a[3];
                     SimpleRPG.enemy[0] = 1;
                     SimpleRPG.enemy_lvl[0] = (int) a[4];
+                    SimpleRPG.enemy_effect[0] = (String) a[5];
 
                     Object[] b = (Object[]) SimpleRPG.createEnemy();
                     SimpleRPG.enemy_name[1] = (String) b[0];
@@ -60,6 +71,7 @@ public class Rooms {
                     SimpleRPG.enemy_dmg[1] = (int) b[3];
                     SimpleRPG.enemy[1] = 1;
                     SimpleRPG.enemy_lvl[1] = (int) b[4];
+                    SimpleRPG.enemy_effect[1] = (String) a[5];
 
                     System.out.println("Вы шли по тусклому тоннелю и набрели на " + SimpleRPG.enemy_name[0] + " вместе с " + SimpleRPG.enemy_name[1]);
                     SimpleRPG.inFight = 1;
@@ -73,6 +85,7 @@ public class Rooms {
                     SimpleRPG.enemy_dmg[0] = (int) a[3];
                     SimpleRPG.enemy[0] = 1;
                     SimpleRPG.enemy_lvl[0] = (int) a[4];
+                    SimpleRPG.enemy_effect[0] = (String) a[5];
 
                     Object[] b = (Object[]) SimpleRPG.createEnemy();
                     SimpleRPG.enemy_name[1] = (String) b[0];
@@ -82,6 +95,7 @@ public class Rooms {
                     SimpleRPG.enemy_dmg[1] = (int) b[3];
                     SimpleRPG.enemy[1] = 2;
                     SimpleRPG.enemy_lvl[1] = (int) b[4];
+                    SimpleRPG.enemy_effect[1] = (String) a[5];
 
                     Object[] c = (Object[]) SimpleRPG.createEnemy();
                     SimpleRPG.enemy_name[2] = (String) c[0];
@@ -91,6 +105,7 @@ public class Rooms {
                     SimpleRPG.enemy_dmg[2] = (int) c[3];
                     SimpleRPG.enemy[2] = 3;
                     SimpleRPG.enemy_lvl[2] = (int) c[4];
+                    SimpleRPG.enemy_effect[2] = (String) a[5];
 
                     SimpleRPG.inFight = 1;
 
@@ -136,6 +151,11 @@ public class Rooms {
                             SimpleRPG.hero[i] = i + 1;
                             SimpleRPG.hero_lvl[i] = (int) mercenary[4];
                             SimpleRPG.hero_mana[i] = (int) mercenary[5];
+                            SimpleRPG.hero_charisma[i] = (int) mercenary[6];
+                            SimpleRPG.hero_nature[i] = (String) mercenary[7];
+                            SimpleRPG.hero_maxMana[i] = (int) mercenary[8];
+                            SimpleRPG.hero_class_xp[i] = 0;
+                            SimpleRPG.hero_class_xp_xp[i] = 0;
                             SimpleRPG.hero_maxHp[i] = SimpleRPG.hero_hp[i];
                             System.out.println("К вам присоединился новый персонаж! Встречайте: " + mercenary[0] + "!");
                             SimpleRPG.thatHero(i);
@@ -162,6 +182,11 @@ public class Rooms {
                                         SimpleRPG.hero[i] = i + 1;
                                         SimpleRPG.hero_lvl[i] = (int) mercenary[4];
                                         SimpleRPG.hero_mana[i] = (int) mercenary[5];
+                                        SimpleRPG.hero_charisma[i] = (int) mercenary[6];
+                                        SimpleRPG.hero_nature[i] = (String) mercenary[7];
+                                        SimpleRPG.hero_maxMana[i] = (int) mercenary[8];
+                                        SimpleRPG.hero_class_xp[i] = 0;
+                                        SimpleRPG.hero_class_xp_xp[i] = 0;
                                         SimpleRPG.hero_maxHp[i] = SimpleRPG.hero_hp[i];
                                         System.out.println("К вам присоединился новый персонаж! Встречайте: " + mercenary[0] + "!");
                                         SimpleRPG.thatHero(i);
@@ -176,7 +201,7 @@ public class Rooms {
                     System.out.println("Входя в комнату #" + SimpleRPG.room_count + " вы оказываетесь в таверне. Внезапно к вам подходит одетый в черный плащ " + mercenary[0] + " и предлагает" +
                             " вам свою помощь за деньги, которых у вас нет. Он уходит.");
                 }
-            } else {
+            } else if (event == 3){
                 SimpleRPG.updateScreen();
                 System.out.println("Вы брели по тоннелю, пока не забрели в небольшой подземный магазин. Хотите что-то купить? (y/n)");
                 String answer = reader.readLine();
@@ -191,14 +216,14 @@ public class Rooms {
                     System.out.println(SimpleRPG.green + ( + 1) + ". " + SimpleRPG.weapon_names[loot] + SimpleRPG.reset + " Класс:" + SimpleRPG.weapon_classes[loot] + " Урон:" + temp_dmg + " Уровень:" + temp_lvl + "    Цена:" + cost + " золотых.");
                     int loot2 = random.nextInt(SimpleRPG.weapon_names.length);
                     int temp_lvl2 = SimpleRPG.checkDifficult() * (random.nextInt(2) + 1);
-                    int temp_dmg2 = random.nextInt(SimpleRPG.weapon_stats[loot]) + 1 + temp_lvl;
+                    int temp_dmg2 = random.nextInt(SimpleRPG.weapon_stats[loot2]) + 1 + temp_lvl;
                     int cost2 = (random.nextInt(30) + 5) * temp_lvl;
-                    System.out.println(SimpleRPG.green + ( + 2) + ". " + SimpleRPG.weapon_names[loot] + SimpleRPG.reset + " Класс:" + SimpleRPG.weapon_classes[loot] + " Урон:" + temp_dmg2 + " Уровень:" + temp_lvl2 + "    Цена:" + cost2 + " золотых.");
+                    System.out.println(SimpleRPG.green + ( + 2) + ". " + SimpleRPG.weapon_names[loot2] + SimpleRPG.reset + " Класс:" + SimpleRPG.weapon_classes[loot2] + " Урон:" + temp_dmg2 + " Уровень:" + temp_lvl2 + "    Цена:" + cost2 + " золотых.");
                     int loot3 = random.nextInt(SimpleRPG.weapon_names.length);
                     int temp_lvl3 = SimpleRPG.checkDifficult() * (random.nextInt(2) + 1);
-                    int temp_dmg3 = random.nextInt(SimpleRPG.weapon_stats[loot]) + 1 + temp_lvl;
+                    int temp_dmg3 = random.nextInt(SimpleRPG.weapon_stats[loot3]) + 1 + temp_lvl;
                     int cost3 = (random.nextInt(30) + 5) * temp_lvl;
-                    System.out.println(SimpleRPG.green + ( + 3) + ". " + SimpleRPG.weapon_names[loot] + SimpleRPG.reset + " Класс:" + SimpleRPG.weapon_classes[loot] + " Урон:" + temp_dmg3 + " Уровень:" + temp_lvl3 + "    Цена:" + cost3 + " золотых.");
+                    System.out.println(SimpleRPG.green + ( + 3) + ". " + SimpleRPG.weapon_names[loot3] + SimpleRPG.reset + " Класс:" + SimpleRPG.weapon_classes[loot3] + " Урон:" + temp_dmg3 + " Уровень:" + temp_lvl3 + "    Цена:" + cost3 + " золотых.");
                     int closed = 0;
                     int h = 0;
                     System.out.println("Введи номер оружия, чтобы купить его, или N для выхода.");
@@ -304,8 +329,8 @@ public class Rooms {
                             }
                         }
                     } else if(chooose.equals("3")) {
-                        SimpleRPG.gold -= cost3;
                         if(SimpleRPG.gold >= cost3) {
+                        	SimpleRPG.gold -= cost3;
                             for (int c = 0; c < 6; c++) {
                                 if (SimpleRPG.weapon_name[c].equals("null")) {
                                     if (h == 0) {
@@ -355,8 +380,93 @@ public class Rooms {
                         }
                     }
                 }
+            } else if (event == 4) {
+                if (dif == 1) {
+                    Object[] a = (Object[]) SimpleRPG.createMiniBoss();
+                    SimpleRPG.enemy_name[0] = (String) a[0];
+                    SimpleRPG.enemy_hp[0] = (int) a[1];
+                    SimpleRPG.enemy_maxHp[0] = SimpleRPG.enemy_hp[0];
+                    SimpleRPG.enemy_class[0] = (String) a[2];
+                    SimpleRPG.enemy_dmg[0] = (int) a[3];
+                    SimpleRPG.enemy[0] = 1;
+                    SimpleRPG.enemy_lvl[0] = (int) a[4];
+                    SimpleRPG.enemy_effect[0] = (String) a[5];
+
+                    if(SimpleRPG.enemy_name[0].equals("Каменный голем")) {
+                        System.out.println("Внезапно земля под ногами начинает потрясываться. Вы слышите стук камней.");
+                        reader.readLine();
+                        System.out.println("*грохот*");
+                        reader.readLine();
+                        if(SimpleRPG.enemy_effect[0] == "none") {
+                            System.out.println("Из-за поворота на вас выглядывает здоровенный каменный голем. Такую машину не остановить чем-то легким. Готовьте что-то мощное.");
+                        } else if(SimpleRPG.enemy_effect[0] == "Яд") {
+                            System.out.println("Из-за поворота на вас выглядывает здоровенный каменный голем, обвешанный лозами. Осторожно, кажется его лозы ядовиты.");
+                        } else if (SimpleRPG.enemy_effect[0] == "Колючий"){
+                            System.out.println("Из-за поворота на вас выглядывает здоровенный каменный голем, покрытый огромными шипами. Кажется, шипы достаточно острые, чтобы моментально наносить урон.");
+                        }
+                        reader.readLine();
+                    } else if(SimpleRPG.enemy_name[0].equals("Демилич")) {
+                        System.out.println("Вас внезапно начинает что-то тревожить.");
+                        reader.readLine();
+                        System.out.println("*свист*");
+                        reader.readLine();
+                        if(SimpleRPG.enemy_effect[0] == "none") {
+                            System.out.println("На вас с бешенной скоростью несется парящий череп в синем огне. кажется, это Демилич. Вам стоить быть осторожнее.");
+                        } else if(SimpleRPG.enemy_effect[0] == "Яд") {
+                            System.out.println("Вы и не замечаете как к вам начинает приближаться летающая голова, горящая зелёным огнем. Скорее всего, это ядовитый Демилич.");
+                        } else if (SimpleRPG.enemy_effect[0] == "Колючий"){
+                            System.out.println("Черепок, покрытый шипами скатывается вниз с лестницы. -Бойся меняяяя! Я Демилич - кричит голова. Он может мгновенно нанести ответный урон.");
+                        }
+                        reader.readLine();
+                    } else if(SimpleRPG.enemy_name[0].equals("Кентавр")) {
+                        System.out.println("Лошадиный топот слышно отовсюду.");
+                        reader.readLine();
+                        System.out.println("*лошадиный смех*");
+                        reader.readLine();
+                        if(SimpleRPG.enemy_effect[0] == "none") {
+                            System.out.println("Сзади к вам подскочил Кентавр в булатных доспехах и мечом в руке. Его горящие глаза пугают вас.");
+                        } else if(SimpleRPG.enemy_effect[0] == "Яд") {
+                            System.out.println("Мимо вас пролетает стрела с непонятной жижей на ней. Вслед за стрелой из тени выходит Кентавр. Он хочет убить вас.");
+                        } else if (SimpleRPG.enemy_effect[0] == "Колючий"){
+                            System.out.println("Вы догадываетесь, что это кентавр, однако как только вы окончательно его замечаете, то приходите в замешательство. Он весь напичкан шипами и вовсе не ранен. Он использует шипы как броню.");
+                        }
+                        reader.readLine();
+                    } else if(SimpleRPG.enemy_name[0].equals("Циклоп")) {
+                        System.out.println("Входя в комнату вы видите Циклопа, пасущего овец..");
+                        reader.readLine();
+                        System.out.println("*...*");
+                        reader.readLine();
+                        if(SimpleRPG.enemy_effect[0] == "none") {
+                            System.out.println("Пока вы стояли в ожидании чего-то, до Циклопа дошло, что вы можете быть вкусными. Он хочет убить вас.");
+                        } else if(SimpleRPG.enemy_effect[0] == "Яд") {
+                            System.out.println("Вы замечаете странное, сгорбленное существо с кучей клыков и лишь одним глазом. Своими шипастыми культяпками он отрывает от коровы мясо и ложит в свою пасть. Заметив вас, у него изо рта бежит зеленая слюна. Он бросается на вас.");
+                        } else if (SimpleRPG.enemy_effect[0] == "Колючий"){
+                            System.out.println("Вы встречаете необычного циклопа, полностью покрытого шипами. Он замечает вас. Ну что-ж, в бой.");
+                        }
+                        reader.readLine();
+                    }
+
+                    SimpleRPG.inFight = 1;
+
+                }
+            } else if(event == 5) {
+                System.out.println("Вы натыкаетесь на место для проведения ритуалов. По середине стоит плоский камень, а вокруг него расположены 9 обелисков.");
+                reader.readLine();
+                System.out.println("Вы заметили надпись на камне: Положи оружие и добавь очков прокачки, тогда его уровень и характеристики повысятся.");
+                reader.readLine();
+                System.out.println("Попробовать? (y/n)");
+                String answer = reader.readLine();
+                if(answer.equals("y")) {
+                    //todo Доделать систему прокачки оружия
+                } else {
+                    System.out.println("Вы прошли мимо...");
+                }
             }
 
+        }
+        if(grats == 1) {
+            grats = 0;
+            System.out.println("[Очки] Вам начислены очки прокачки за достижение " + SimpleRPG.room_count + " комнаты!");
         }
         SimpleRPG.selectMenu();
     }

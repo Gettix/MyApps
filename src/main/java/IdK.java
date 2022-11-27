@@ -9,7 +9,7 @@ public class IdK {
     public static String[] ads = new String[30];
     public static int position = 13;
 
-    public  static void main(String[] args) throws IOException, InterruptedException {
+    public  static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         /*System.out.println("Введите процент: ");
         String a = reader.readLine();

@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.InterruptedIOException;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -9,12 +10,15 @@ public class SimpleRPG {
     public static int inFight = 1;
 
     public static int room_count = 1;
-    public static int chests = 10;
+    public static int chests = 40;
+    public static int mana_cst = 0;
+    public static int scores = 0;
 
     public static int turns_unto_reset = -1;
     public static int pay_to_esc = 5;
+    // public static String[] places = {"[-]", "[-]", "[-]"};
 
-    public static int gold = 10;
+    public static int gold = 5;
 
     // ХОДЫ
 
@@ -22,17 +26,18 @@ public class SimpleRPG {
 
     // ЗАЩИТА
     //todo ДОДЕЛАТЬ ЗАЩИТУ
-    public static String[] shield_names = {"Деревянный щит"};
-    public static int[] shield_hps = {3};
-    public static int[] shield_stats = {50};
+    public static String[] shield_names = {"Деревянный щит", "Стальные доспехи", "Железный щит", "Кованый жилет"};
+    public static int[] shield_hps = {3, 5, 2, 3};
+    public static int[] shield_stats = {20, 50, 60, 40};
 
     // ОРУЖИЯ
 
-    public static String[] weapon_names = {"Обыкновенный меч", "Железный кинжал", "Простой лук", "Книга целителя", "Атлас призыва стрел", "Боевой топор", "Арбалет", "Шар воплощения"};
-    public static String[] types = {"Ближний", "Ближний", "Дальний", "Лечение", "Дальний", "Ближний", "Дальний", "Ближний"};
-    public static String[] weapon_classes = {"Рыцарь", "Берсерк", "Лучник", "Паладин", "Маг", "Берсерк", "Лучник", "Чародей"};
+    public static String[] weapon_names = {"Обыкновенный меч", "Ядовитый кинжал", "Простой лук", "Книга целителя", "Атлас призыва стрел", "Боевой топор", "Арбалет", "Шар воплощения", "Меч Святой Клятвы", "Эскалибур", "Книга Заклинаний"};
+    public static int[] mana_cost= {0, 0, 0, 10, 10, 0, 0, 15, 5, 20, 0};
+    public static String[] types = {"Ближний", "Ближний", "Дальний", "Лечение", "Дальний", "Ближний", "Дальний", "Ближний", "Ближний", "Ближний", "Магия"};
+    public static String[] weapon_classes = {"Рыцарь", "Берсерк", "Лучник", "Паладин", "Маг", "Берсерк", "Лучник", "Чародей", "Паладин", "Рыцарь", "Маг"};
     public static String[] items = {"Пирог", "Вишня"};
-    public static int[] weapon_stats = {15, 25, 30, 20, 35, 30, 40, 50};
+    public static int[] weapon_stats = {15, 25, 30, 20, 35, 30, 40, 50, 45, 80, 100};
     public static int[] item_stats = {2, 1};
 
     // ИНВЕНТАРЬ
@@ -63,6 +68,7 @@ public class SimpleRPG {
     // ГЕРОИ
 
     public static String[] classes = {"Чародей", "Рыцарь", "Паладин", "Берсерк", "Маг", "Лучник"};
+    public static String[] natures = {"Веселый", "Спокойный", "Амбициозный", "Мудрый"};
     public static String[] names = {"Гошан", "Нилу", "Серега", "Милана", "Старый", "Меченый", "Юра Всратый", "Саша", "Гитлер", "Руна", "Миллер", "Шурик", "Нимрус", "Вольфрам", "Штайнус", "Спурс", "Крякнес", "Симфи", "Рё-Мин", "Кеннеди", "Джаспер", "Крюгер", "Гендальф", "Внезапный дед", "Гнхоби", "Мирвельт", "Лимсения", "Виргл", "Узкоглазый Динн"};
     public static int[] hero_lvl = new int[3];
 
@@ -71,32 +77,49 @@ public class SimpleRPG {
     public static int[] hero_dmg = new int[3];
 
     public static int[] hero_maxHp = new int[3];
+    public static String[] hero_nature = new String[3];
     public static int[] hero_hp = new int[3];
+    public static int[] hero_maxMana = new int[3];
     public static int[] hero_mana = new int[3];
     public static int[] hero_shield = {1, 1, 1};
     public static int[] isReady = {0, 0, 0};
     public static String[] hero_name = {"null", "null", "null"};
+    public static int[] hero_charisma = new int[3];
+    public static int[] hero_class_xp = new int[3];
+    public static int[] hero_class_xp_xp = new int[3];
     public static int[] hero = new int[3];
 
     //КЛАССЫ
 
     public static int[] berserk = {0, 0, 0};
 
+    // ОСОБЕННОСТИ
+
+
     // ВРАГИ
 
-    public static String[] enemy_names = {"Орк", "Скелет", "Дракончик", "Странный паук", "Снеговик", "Сумасшедшая книга"};
-    public static int[] enemys = new int[6];
+    public static String[] enemy_names = {"Орк", "Скелет", "Дракончик", "Странный паук", "Снеговик", "Сумасшедшая книга", "Ядовитый слизень", "Большой краб", "Шипастый жук"};
+    public static String[] miniBosses_names = {"Каменный голем", "Демилич", "Кентавр", "Циклоп"};
+    public static int[] enemy_hps = {100, 80, 120, 50, 30, 20, 35, 40, 45};
+    public static int[] miniBosses_hps = {300, 150, 200, 250};
+    public static String[] enemy_effects = {"none", "none", "none", "none", "none", "none", "Яд", "none", "Колючий"};
 
     public static int[] enemy_lvl = new int[3];
     public static String[] enemy_class = new String[3];
     public static int[] enemy_dmg = new int[3];
     public static int[] enemy_hp = new int[3];
+    public static String[] enemy_effect = {"null", "null", "null"};
     public static int[] enemy_maxHp = new int[3];
+    public static int[] enemy_nextAttack = {0, 0, 0};
     public static String[] enemy_name = {"null", "null", "null"};
     public static int[] enemy = new int[3];
 
     public static String green = "\u001B[32m";
+    public static String blue = "\u001B[34m";
     public static String yellow = "\u001B[33m";
+    public static String enemy_red = "\u001B[41m";
+    public static String enemy_dark = "\u001B[30m";
+    public static String hero_yellow = "\u001B[40m";
     public static String reset = "\u001B[0m";
     public static String red = "\u001B[31m";
     public static String n = "\n";
@@ -134,18 +157,25 @@ public class SimpleRPG {
         System.out.println("Выбери героя:");
         Random random = new Random();
         int temp_hp = 100;
+        int temp_nature = random.nextInt(4);
+
+        int temp_charisma = random.nextInt(5);
         int temp_class = random.nextInt(5);
         int randomName = random.nextInt(28);
         int temp_hp1 = 100;
+        int temp_nature1 = random.nextInt(4);
+        int temp_charisma1 = random.nextInt(5);
         int temp_class1 = random.nextInt(5);
         int randomName1 = random.nextInt(28);
         int temp_hp2 = 100;
+        int temp_nature2 = random.nextInt(4);
+        int temp_charisma2 = random.nextInt(5);
         int temp_class2 = random.nextInt(5);
         int randomName2 = random.nextInt(28);
 
-        System.out.println(green + "1." + names[randomName] + reset + "\n Жизни: " + temp_hp + "\n Класс: " + classes[temp_class]);
-        System.out.println(green + "2." + names[randomName1] + reset + "\n Жизни: " + temp_hp1 + "\n Класс: " + classes[temp_class1]);
-        System.out.println(green + "3." + names[randomName2] + reset + "\n Жизни: " + temp_hp2 + "\n Класс: " + classes[temp_class2]);
+        System.out.println(green + "1." + names[randomName] + reset + "\n Жизни: " + temp_hp + "\n Класс: " + classes[temp_class] + "\n Характер: " + natures[temp_nature]);
+        System.out.println(green + "2." + names[randomName1] + reset + "\n Жизни: " + temp_hp1 + "\n Класс: " + classes[temp_class1] + "\n Характер: " + natures[temp_nature1]);
+        System.out.println(green + "3." + names[randomName2] + reset + "\n Жизни: " + temp_hp2 + "\n Класс: " + classes[temp_class2] + "\n Характер: " + natures[temp_nature2]);
 
         System.out.print("Ввод: ");
         int choose = Integer.parseInt(reader.readLine());
@@ -156,7 +186,13 @@ public class SimpleRPG {
             hero_name[0] = names[randomName];
             hero_class[0] = classes[temp_class];
             hero_dmg[0] = 40;
+            hero_nature[0] = natures[temp_nature];
+            hero_charisma[0] = temp_charisma;
+            hero_class_xp[0] = 0;
+            hero_class_xp_xp[0] = 0;
             hero_lvl[0] = 1;
+            hero_mana[0] = 40;
+            hero_maxMana[0] = hero_mana[0];
             hero_maxHp[0] = temp_hp;
         } else if (choose == 2) {
             hero[0] = 0;
@@ -164,8 +200,13 @@ public class SimpleRPG {
             hero_name[0] = names[randomName1];
             hero_class[0] = classes[temp_class1];
             hero_dmg[0] = 1;
+            hero_nature[0] = natures[temp_nature1];
+            hero_charisma[0] = temp_charisma1;
+            hero_class_xp[0] = 0;
+            hero_class_xp_xp[0] = 0;
             hero_lvl[0] = 1;
-            hero_mana[0] = 5;
+            hero_mana[0] = 40;
+            hero_maxMana[0] = hero_mana[0];
             hero_maxHp[0] = temp_hp1;
         } else {
             hero[0] = 0;
@@ -174,7 +215,12 @@ public class SimpleRPG {
             hero_class[0] = classes[temp_class2];
             hero_dmg[0] = 1;
             hero_lvl[0] = 1;
-            hero_mana[0] = 5;
+            hero_charisma[0] = temp_charisma2;
+            hero_nature[0] = natures[temp_nature2];
+            hero_class_xp[0] = 0;
+            hero_class_xp_xp[0] = 0;
+            hero_mana[0] = 40;
+            hero_maxMana[0] = hero_mana[0];
             hero_maxHp[0] = temp_hp2;
         }
 
@@ -193,6 +239,7 @@ public class SimpleRPG {
         enemy[0] = 1;
         enemy_name[0] = "Орк";
         enemy_maxHp[0] = 15;
+        enemy_lvl[0] = 30;
         enemy_dmg[0] = 5;
         enemy_hp[0] = 11;
 
@@ -214,6 +261,16 @@ public class SimpleRPG {
 
     }
 
+    public static int cost(int heroId, int mana) {
+        int cost = mana;
+        for(int i = 0; i < weapon_names.length; i++) {
+            if (equipped[heroId].equals(weapon_names[i])) {
+                cost = mana * hero_lvl[heroId];
+            }
+        }
+        return cost;
+    }
+
     // Настройки
     public static void settings() {
 
@@ -224,14 +281,16 @@ public class SimpleRPG {
 
     }
 
+
     /* public static int[] turnOut(int hero_dmg, int hero_hp) {
 
         return new int[0];
         }
     */
 
-    public static int[] turnHero(int hero_dmg, int enemy_hp, String hero_name1, String enemy_name1, int hero, int enemy) throws InterruptedException {
+    public static int[] turnHero(int hero_dmg, int enemy_hp, String hero_name1, String enemy_name1, int hero, int enemy) throws InterruptedException, IOException {
 
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         Random random = new Random();
         int hero_turn = 0;
         int hero_hit;
@@ -247,28 +306,74 @@ public class SimpleRPG {
 
         updateScreen();
 
-        if(hero_dmg > 0) {
-            if(hero_class[hero].equals("Берсерк")) {
-                hero_hit = (random.nextInt(hero_dmg) + 1) * hero_lvl[hero];
-            } else {
-                hero_hit = random.nextInt(hero_dmg) + 1 + hero_lvl[hero];
-            }
-            hero_turn = enemy_hp - hero_hit; // Прибавляется к хп врага
-            if((hero_turn) <= 0) {
-                enemy_name[enemy] = "null";
-                int xp = enemy_lvl[enemy] * (random.nextInt(4) + 1) * lvl_bust;
-                hero_xp[hero] += xp;
-                if(hero_xp[hero] >= 30 * hero_lvl[hero]) {
-                    hero_lvl[hero] ++;
-                    hero_xp[hero] = 0;
-                    System.out.println("Персонаж " + hero_name1 + " перешел на уровень [" + hero_lvl[hero] + "].");
+        if(hero_mana[hero] >= cost(hero, mana_cst)) {
+
+            if (hero_dmg > 0) {
+                hero_mana[hero] -= cost(hero, mana_cst);
+
+                if (hero_class[hero].equals("Берсерк")) {
+                    hero_hit = (random.nextInt(hero_dmg) + 1) * hero_lvl[hero];
                 } else {
-                    System.out.println("Персонаж " + hero_name1 + " получил [" + xp + "] опыта.");
+                    hero_hit = random.nextInt(hero_dmg) + 1 + hero_lvl[hero];
                 }
-                System.out.println("Персонаж " + hero_name1 + " добивает " + enemy_name1 + " нанеся [" + hero_hit + "] урона.");
-            } else {
-                System.out.println("Персонаж " + hero_name1 + " наносит [" + hero_hit + "] урона " + enemy_name1);
+                hero_turn = enemy_hp - hero_hit; // Прибавляется к хп врага
+                if ((hero_turn) <= 0) {
+                    enemy_name[enemy] = "null";
+                    int xp = enemy_lvl[enemy] * (random.nextInt(4) + 1) * lvl_bust + (enemy_hp / 20);
+                    hero_xp[hero] += xp;
+                    if (hero_xp[hero] >= 30 * hero_lvl[hero]) {
+                        hero_lvl[hero]++;
+                        int mana_before = hero_maxMana[hero];
+                        hero_maxMana[hero] = hero_maxMana[hero] + (hero_maxMana[hero] / 4);
+                        String gt = "" + hero_maxMana[hero];
+                        String[] g = gt.split("");
+                        int f = 0;
+                        try {
+                            f = Integer.parseInt(g[1]);
+                        } catch (Exception e) {
+                            f = Integer.parseInt(g[0]);
+                        }
+                        if(f < 5) {
+                            g[1] = "5";
+                            hero_maxMana[hero] = Integer.parseInt(g[0] + g[1]);
+                        } else if (f > 5 & f < 10) {
+                            g[1] = "0";
+                            f = Integer.parseInt(g[0]) + 1;
+                            g[0] = "" + f;
+                            hero_maxMana[hero] = Integer.parseInt(g[0] + g[1]);
+                        }
+                        int hp_before = hero_maxHp[hero];
+                        hero_maxHp[hero] = hero_maxHp[hero] + (hero_maxHp[hero] / 10);
+                        hero_xp[hero] = 0;
+                        updateScreen();
+                        System.out.println("Персонаж " + hero_name1 + " перешел на уровень [" + hero_lvl[hero] + "]."); // УВЕДОМЛЕНИЕ О ПОВЫШЕНИИ ХАРАКТЕРИСТИК
+                        if(hp_before != hero_maxHp[hero]) {
+                            System.out.println("Здоровье повысилось: " + hp_before + " => " + hero_maxHp[hero]);
+                        }
+                        if(mana_before != hero_maxMana[hero]) {
+                            System.out.println("Мана повысилась: " + mana_before + " => " + hero_maxMana[hero]);
+                        }
+                        scores++;
+                        System.out.println("[Очки] Вам начислены очки прокачки за повышение уровня!");
+                        String y = reader.readLine();
+                    } else {
+                        System.out.println("Персонаж " + hero_name1 + " получил [" + xp + "] опыта.");
+                    }
+                    System.out.println("Персонаж " + hero_name1 + " добивает " + enemy_name1 + " нанеся [" + hero_hit + "] урона.");
+                } else {
+                    System.out.println("Персонаж " + hero_name1 + " наносит [" + hero_hit + "] урона " + enemy_name1);
+                    Effects.effectWeapon(hero, enemy);
+                    if (enemy_effect[enemy].equals("Колючий")) {
+                        if (!type_eq[hero].equals("Дальний")) {
+                            System.out.println(enemy_name1 + " мгновенно отвечает вам тем же.");
+                            turnEnemy(enemy_dmg[enemy], hero_hp[hero], hero_name[hero], hero, enemy_name[enemy], enemy);
+                        }
+                    }
+                }
             }
+        } else {
+            System.out.println("Недостаточно маны.");
+            selectMenu();
         }
 
         int a = 0;
@@ -297,11 +402,11 @@ public class SimpleRPG {
         return new int[]{hero_turn};
     }
 
-    public static int turnEnemy(int enemy_dmg, int hero_hp, String hero_name2, int hero1, String enemy_name1) throws InterruptedException {
+    public static int turnEnemy(int enemy_dmg, int hero_hp, String hero_name2, int hero1, String enemy_name1, int enemy1) throws InterruptedException {
 
         Random random = new Random();
         int enemy_turn = hero_hp;
-        int enemy_hit = random.nextInt(enemy_dmg) + 1;
+        int enemy_hit = enemy_nextAttack[enemy1];
 
         TimeUnit.SECONDS.sleep(1);
 
@@ -317,9 +422,17 @@ public class SimpleRPG {
 
                 } else {
                     System.out.println("Враг " + enemy_name1 + " наносит [" + enemy_hit + "] урона " + hero_name2);
+                    if(enemy_effect[enemy1].equals("Яд")) {
+                        int luck = random.nextInt(6 - enemy_lvl[enemy1]);
+                        int effect_lvl = (random.nextInt(2) + 1) * enemy_lvl[enemy1];
+                        int turns = random.nextInt(3) + 1;
+                        if (luck == 1) {
+                            Effects.poison(2, hero1, turns, effect_lvl);
+                        }
+                    }
                 }
             } else {
-                enemy_hit = random.nextInt(enemy_dmg) + 1 - (hero_shield[hero1] + shield_def[hero1]);
+                enemy_hit = enemy_nextAttack[enemy1] - (hero_shield[hero1] + shield_def[hero1]);
                 if (enemy_hit > 0) {
                     enemy_turn = hero_hp - enemy_hit; // Прибавляется к хп героя
                     if (enemy_turn <= 0) {
@@ -333,6 +446,14 @@ public class SimpleRPG {
                     } else {
                         System.out.println("Враг " + enemy_name1 + " пробивает щит и наносит [" + enemy_hit + "] урона " + hero_name2);
                         shield_hp_e[hero1] = shield_hp_e[hero1] - 1;
+                        if(enemy_effect[enemy1].equals("Яд")) {
+                            int luck = random.nextInt(6 - enemy_lvl[enemy1]);
+                            int effect_lvl = (random.nextInt(2) + 1) * enemy_lvl[enemy1];
+                            int turns = random.nextInt(3) + 1;
+                            if (luck == 1) {
+                                Effects.poison(2, hero1, turns, effect_lvl);
+                            }
+                        }
                     }
                 } else {
                     System.out.println(enemy_name1 + " не пробивает щит " + hero_name2);
@@ -342,11 +463,12 @@ public class SimpleRPG {
                 isReady[hero1] = 0;
                 if(!equipped_shields[hero1].equals("null")) {
                     if (shield_hp_e[hero1] <= 0) {
-                        System.out.println("Щит " + shield_name[hero1] + " вышел из строя.");
                         for (int r = 0; r < 4; r++) {
                             if (shield_ids[r] == shield_id[hero1]) {
                                 shield_name[r] = "null";
-                                shield_def[r] = 0;
+                                equipped_shields[hero1] = "null";
+                                shield_def[hero1] = 0;
+                                System.out.println("Щит " + shield_name[hero1] + " вышел из строя.");
                             }
                         }
                     }
@@ -374,6 +496,22 @@ public class SimpleRPG {
         }
     }
 
+    public static void heroTraits(int id) {
+        String a = "" + (hero_mana[id] / 5);
+        String mana = "";
+        String m = "";
+        int ami = Integer.parseInt(a);
+        String m1 = "" + "#".repeat(Math.max(0, ami)) +
+                "-".repeat(Math.max(0, ((hero_maxMana[id] / 5) - ami)));
+
+        System.out.println("     [Характеристики " + hero_name[id] + "]");
+        System.out.println("     Мана: " + blue + "[" + m1 + "]" + reset + " " + hero_mana[id] + " mana");
+        System.out.println("Атака: " + hero_dmg[id] + "             Харизма: " + hero_charisma[id]);
+        System.out.println("Защита: " + shield_def[id] + "            Характер: " + hero_nature[id]);
+        System.out.println("         Мастерство: " + hero_class_xp[id]);
+        System.out.println(" ");
+    }
+
     public static void thatHero(int id) {
         String color;
         if(!hero_name[id].equals("null")) {
@@ -387,11 +525,11 @@ public class SimpleRPG {
             String s = "";
             int ami = Integer.parseInt(am);
             String s1 = "" + "#".repeat(Math.max(0, ami)) +
-                    "-".repeat(Math.max(0, (20 - ami)));
-            if(hero_hp[id] <= 60 && hero_hp[id] > 30) {
+                    "-".repeat(Math.max(0, ((hero_maxHp[id] / 5) - ami)));
+            if(hero_hp[id] <= (hero_maxHp[id] / 2 + hero_maxHp[id] / 4) && hero_hp[id] > (hero_maxHp[id] / 3)) {
                 load = s1;
                 s = yellow + "[" + load + "]" + reset + "   [" + hero_hp[id] + " hp]";
-            } else if(hero_hp[id] < 31) {
+            } else if(hero_hp[id] < (hero_maxHp[id] / 3)) {
                 load = s1;
                 s = red + "[" + load + "]" + reset + "   [" + hero_hp[id] + " hp]";
             } else {
@@ -399,32 +537,154 @@ public class SimpleRPG {
                 s = green + "[" + load + "]" + reset + "   [" + hero_hp[id] + " hp]";
             }
             if (equipped[id].equals("null")) {
-                System.out.println(color + (id + 1) + ". " + hero_name[id] + reset  + " Оружие:Руки" + " Класс:" + hero_class[id] + " Урон:" + hero_dmg[id] + " Уровень:" + hero_lvl[id] + " (" + hero_xp[id] + "/" + (30 * hero_lvl[id]) + ")   " + s);
+                System.out.println(color + (id + 1) + ". " + hero_name[id] + reset  + " Оружие:Руки" + " Класс:" + hero_class[id] + " Уровень:" + hero_lvl[id] + " (" + hero_xp[id] + "/" + (30 * hero_lvl[id]) + ")   " + s);
+                if(Effects.getPoisoned_hero()[id] != 0) {
+                    System.out.print("   [Отравлен]");
+                }
             } else {
-                System.out.println(color + (id + 1) + ". " + hero_name[id] + reset + " Оружие:" + equipped[id] + " Класс:" + hero_class[id] + " Урон:" + hero_dmg[id] + " Уровень:" + hero_lvl[id] +  " (" + hero_xp[id] + "/" + (30 * hero_lvl[id]) + ")   " + s);
+                System.out.println(color + (id + 1) + ". " + hero_name[id] + reset + " Оружие:" + equipped[id] + " Класс:" + hero_class[id] + " Уровень:" + hero_lvl[id] +  " (" + hero_xp[id] + "/" + (30 * hero_lvl[id]) + ")   " + s);
+                if(Effects.getPoisoned_hero()[id] != 0) {
+                    System.out.print("   [Отравлен]");
+                }
             }
         }
     }
-    public static void thatEnemy(int id) { //C:\Program Files\Eclipse Adoptium\jdk-8.0.312.7-hotspot\
-        if(!enemy_name[id].equals("null")) {
+
+    public static String floor(int id) {
+        String color;
+        String line = "";
+        String line2 = "";
+        String line3;
+        String s = "";
+        String d = "";
+        if (!hero_name[id].equals("null")) {
+            if (turns[id] == 0) {
+                color = green;
+            } else {
+                color = red;
+            }
+            String am = "" + (hero_hp[id] / 5);
+            String load = "";
+
+            int ami = Integer.parseInt(am);
+            String s1 = "" + "#".repeat(Math.max(0, ami)) +
+                    "-".repeat(Math.max(0, ((hero_maxHp[id] / 5) - ami)));
+            if (hero_hp[id] <= (hero_maxHp[id] / 2 + hero_maxHp[id] / 4) && hero_hp[id] > (hero_maxHp[id] / 3)) {
+                load = s1;
+                d = yellow + "[" + load + "]" + reset + "   [" + hero_hp[id] + " hp]";
+            } else if (hero_hp[id] < (hero_maxHp[id] / 3)) {
+                load = s1;
+                d = red + "[" + load + "]" + reset + "   [" + hero_hp[id] + " hp]";
+            } else {
+                load = s1;
+                d = green + "[" + load + "]" + reset + "   [" + hero_hp[id] + " hp]";
+            }
+            if (equipped[id].equals("null")) {
+                if (Effects.getPoisoned_hero()[id] != 0) {
+                    line = hero_yellow + color + (id + 1) + ". " + hero_name[id] + reset + " Оружие:Руки" + " Класс:" + hero_class[id] + " Уровень:" + hero_lvl[id] + " (" + hero_xp[id] + "/" + (30 * hero_lvl[id]) + ")   " + " [Отравлен]";
+                } else {
+                    line = hero_yellow + color + (id + 1) + ". " + hero_name[id] + reset + " Оружие:Руки" + " Класс:" + hero_class[id] + " Уровень:" + hero_lvl[id] + " (" + hero_xp[id] + "/" + (30 * hero_lvl[id]) + ")   ";
+                }
+            } else {
+                if (Effects.getPoisoned_hero()[id] != 0) {
+                    line = hero_yellow + color + (id + 1) + ". " + hero_name[id] + reset + " Оружие:" + equipped[id] + " Класс:" + hero_class[id] + " Уровень:" + hero_lvl[id] + " (" + hero_xp[id] + "/" + (30 * hero_lvl[id]) + ")   " + " [Отравлен]";
+                } else {
+                    line = hero_yellow + color + (id + 1) + ". " + hero_name[id] + reset + " Оружие:" + equipped[id] + " Класс:" + hero_class[id] + " Уровень:" + hero_lvl[id] + " (" + hero_xp[id] + "/" + (30 * hero_lvl[id]) + ")   ";
+                }
+            }
+        }
+        if (!enemy_name[id].equals("null")) {
             int yy = enemy_maxHp[id] / 5;
             String am = "" + (enemy_hp[id] / 5);
             String load = "";
-            String s = "";
             int ami = Integer.parseInt(am);
-            String s1 = "" + "#".repeat(Math.max(0, ami)) +
+            String s2 = "" + "#".repeat(Math.max(0, ami)) +
                     "-".repeat(Math.max(0, (yy - ami)));
-            if(enemy_hp[id] <= (enemy_maxHp[id] / 2 + enemy_maxHp[id] / 4) && enemy_hp[id] > (enemy_maxHp[id] / 3)) {
-                load = s1;
+            if (enemy_hp[id] <= (enemy_maxHp[id] / 2 + enemy_maxHp[id] / 4) && enemy_hp[id] > (enemy_maxHp[id] / 3)) {
+                load = s2;
                 s = yellow + "[" + load + "]" + reset + "   [" + enemy_hp[id] + " hp]";
-            } else if(enemy_hp[id] < (enemy_maxHp[id] / 3)) {
-                load = s1;
+            } else if (enemy_hp[id] < (enemy_maxHp[id] / 3)) {
+                load = s2;
                 s = red + "[" + load + "]" + reset + "   [" + enemy_hp[id] + " hp]";
             } else {
-                load = s1;
+                load = s2;
                 s = green + "[" + load + "]" + reset + "   [" + enemy_hp[id] + " hp]";
             }
-            System.out.println(green + (id + 1) + ". " + enemy_name[id] + reset + " Урон:" + enemy_dmg[id] + " Уровень:" + enemy_lvl[id] + "   " + s);
+            String willkick = "";
+            String poisn = "";
+            if (enemy_nextAttack[id] > 0) {
+                willkick = " Нанесёт: " + enemy_nextAttack[id] + " урона.";
+            }
+            if (Effects.getPoisoned_enemy()[id] != 0) {
+                poisn = "   [Отравлен]";
+            }
+            line2 = enemy_red + enemy_dark + (id + 1) + ". " + enemy_name[id] + reset + " Урон:" + enemy_dmg[id] + " Уровень:" + enemy_lvl[id] + willkick + poisn + "  ";
+
+            }
+
+        line3 = line + "   " + line2 + "\n" + d + "                        " + s;
+        return line3;
+    }
+    public static void thatEnemy(int id, boolean nums) { //C:\Program Files\Eclipse Adoptium\jdk-8.0.312.7-hotspot\
+        if (nums == true) {
+            if (!enemy_name[id].equals("null")) {
+                int yy = enemy_maxHp[id] / 5;
+                String am = "" + (enemy_hp[id] / 5);
+                String load = "";
+                String s = "";
+                int ami = Integer.parseInt(am);
+                String s1 = "" + "#".repeat(Math.max(0, ami)) +
+                        "-".repeat(Math.max(0, (yy - ami)));
+                if (enemy_hp[id] <= (enemy_maxHp[id] / 2 + enemy_maxHp[id] / 4) && enemy_hp[id] > (enemy_maxHp[id] / 3)) {
+                    load = s1;
+                    s = yellow + "[" + load + "]" + reset + "   [" + enemy_hp[id] + " hp]";
+                } else if (enemy_hp[id] < (enemy_maxHp[id] / 3)) {
+                    load = s1;
+                    s = red + "[" + load + "]" + reset + "   [" + enemy_hp[id] + " hp]";
+                } else {
+                    load = s1;
+                    s = green + "[" + load + "]" + reset + "   [" + enemy_hp[id] + " hp]";
+                }
+                String willkick = "";
+                String poisn = "";
+                if (enemy_nextAttack[id] > 0) {
+                    willkick = " Нанесёт: " + enemy_nextAttack[id] + " урона.";
+                }
+                if (Effects.getPoisoned_enemy()[id] != 0) {
+                    poisn = "   [Отравлен]";
+                }
+                System.out.println(green + (id + 1) + ". " + enemy_name[id] + reset + " Урон:" + enemy_dmg[id] + " Уровень:" + enemy_lvl[id] + willkick + poisn + "   " + s);
+
+            }
+        } else {
+            if (!enemy_name[id].equals("null")) {
+                int yy = enemy_maxHp[id] / 5;
+                String am = "" + (enemy_hp[id] / 5);
+                String load = "";
+                String s = "";
+                int ami = Integer.parseInt(am);
+                String s1 = "" + "#".repeat(Math.max(0, ami)) +
+                        "-".repeat(Math.max(0, (yy - ami)));
+                if (enemy_hp[id] <= (enemy_maxHp[id] / 2 + enemy_maxHp[id] / 4) && enemy_hp[id] > (enemy_maxHp[id] / 3)) {
+                    load = s1;
+                    s = yellow + "[" + load + "]" + reset + "   [" + enemy_hp[id] + " hp]";
+                } else if (enemy_hp[id] < (enemy_maxHp[id] / 3)) {
+                    load = s1;
+                    s = red + "[" + load + "]" + reset + "   [" + enemy_hp[id] + " hp]";
+                } else {
+                    load = s1;
+                    s = green + "[" + load + "]" + reset + "   [" + enemy_hp[id] + " hp]";
+                }
+                String willkick = "";
+                String poisn = "";
+                if (enemy_nextAttack[id] > 0) {
+                    willkick = " Нанесёт: " + enemy_nextAttack[id] + " урона.";
+                }
+                if (Effects.getPoisoned_enemy()[id] != 0) {
+                    poisn = "   [Отравлен]";
+                }
+                System.out.println(enemy_red + enemy_dark + enemy_name[id] + reset + " Урон:" + enemy_dmg[id] + " Уровень:" + enemy_lvl[id] + willkick + poisn + "   " + s);
+            }
         }
     }
 
@@ -487,6 +747,8 @@ public class SimpleRPG {
 
         difficult_k = hero_lvl_k * (random.nextInt(3) + 1);
 
+        /*System.out.println("Сложность " + difficult_k);*/
+
         if(difficult_k <= 5) {
             difficult = 1;
         } else if (difficult_k > 5 && difficult_k < 20) {
@@ -508,22 +770,61 @@ public class SimpleRPG {
             temp_lvl = 1;
         } else if (checkDifficult() == 2) {
             temp_lvl = random.nextInt(3) + 1;
-        } else if (checkDifficult() == 3) {
+        } else if (checkDifficult() >= 3) {
             temp_lvl = random.nextInt(4) + 1;
         }
-        int temp_hp = ((random.nextInt(10) + 1) * 10) + 50 + (checkDifficult() * 10);
+        int randomName = random.nextInt(enemy_names.length);
+        int temp_hp = (random.nextInt(enemy_hps[randomName]) + 10) + (checkDifficult() * 10);
         int temp_class = random.nextInt(3);
         int temp_dmg = random.nextInt(25) + (checkDifficult() * 5) + (temp_lvl * 5);
-        int randomName = random.nextInt(enemy_names.length);
+        String temp_effect;
+        if(enemy_effects[randomName].equals("Яд")) {
+            temp_effect = "Яд";
+        } else if(enemy_effects[randomName].equals("Колючий")) {
+            temp_effect = "Колючий";
+        } else {
+            temp_effect = "none";
+        }
 
-        return new Object[]{enemy_names[randomName], temp_hp, classes[temp_class], temp_dmg, temp_lvl};
+        return new Object[]{enemy_names[randomName], temp_hp, classes[temp_class], temp_dmg, temp_lvl, temp_effect};
+    }
+
+    public static Object createMiniBoss() {
+        Random random = new Random();
+        int temp_lvl = 0;
+        if(checkDifficult() == 1) {
+            temp_lvl = 2;
+        } else if (checkDifficult() == 2) {
+            temp_lvl = random.nextInt(4) + 1;
+        } else if (checkDifficult() >= 3) {
+            temp_lvl = random.nextInt(5) + 1;
+        }
+        int randomName = random.nextInt(miniBosses_names.length);
+        int temp_hp = (random.nextInt(miniBosses_hps[randomName]) + 10) + (checkDifficult() * 10);
+        int temp_class = random.nextInt(3);
+        int temp_dmg = random.nextInt(35) + (checkDifficult() * 5) + (temp_lvl * 5);
+        String temp_effect;
+        int effect = random.nextInt(3);
+        if(effect == 0) {
+            temp_effect = "Яд";
+        } else if(effect == 1) {
+            temp_effect = "Колючий";
+        } else {
+            temp_effect = "none";
+        }
+
+        return new Object[]{miniBosses_names[randomName], temp_hp, classes[temp_class], temp_dmg, temp_lvl, temp_effect};
     }
 
     public static Object createHero(int select_hero_number) {
         Random random = new Random();
-        int temp_class = random.nextInt(5);
+        int temp_class = random.nextInt(classes.length);
         int temp_hp = 100;
         int temp_mana = 30;
+
+        int temp_charisma = random.nextInt(5);
+        int temp_natureI = random.nextInt(4);
+        String temp_nature = natures[temp_natureI];
 
 
         //КЛАССОВЫЕ ОСОБЕННОСТИ
@@ -538,11 +839,12 @@ public class SimpleRPG {
             temp_mana = 60;
         }
 
+        int temp_maxMana = temp_mana;
 
         int randomName = random.nextInt(28);
 
         // System.out.println(green + select_hero_number + ". " + names[randomName] + reset + "\n Жизни: " + temp_hp + "\n Класс: " + classes[temp_class]);
-        return new Object[]{names[randomName], temp_hp, classes[temp_class], 1, 1, temp_mana};
+        return new Object[]{names[randomName], temp_hp, classes[temp_class], 1, 1, temp_mana, temp_charisma, temp_nature, temp_maxMana};
     }
     /*
     Пример как использовать createHero
@@ -560,114 +862,119 @@ public class SimpleRPG {
 
     public static void openChest() throws IOException, InterruptedException {
         updateScreen();
-        chests--;
-        Random random = new Random();
-        int loot_num = random.nextInt(3) + 1;
-        for (int i = 0; i < loot_num; i++) {
-            int luck = random.nextInt(3) + 1;
-            if (luck == 1) {
-                int loot = random.nextInt(weapon_names.length);
-                int closed = 0;
-                int h = 0;
-                for (int c = 0; c < 6; c++) {
-                    if (weapon_name[c].equals("null")) {
-                        if (h == 0) {
-                            weapon_name[c] = weapon_names[loot];
-                            weapon_lvl[c] = checkDifficult() * (random.nextInt(2) + 1);
-                            weapon_dmg[c] = random.nextInt(weapon_stats[loot]) + 1 + weapon_lvl[c];
-                            weapon_class[c] = weapon_classes[loot];
-                            type[c] = types[loot];
-                            weapon_ids[c] = random.nextInt(200) + 1;
-                            for (int t = 0; t < 6; t++) {
-                                if (weapon_ids[c] == weapon_ids[t]) {
-                                    weapon_ids[c] = random.nextInt(200) + 1;
+        Gui.chest();
+        if(chests > 0) {
+            chests--;
+            Random random = new Random();
+            int loot_num = random.nextInt(3) + 1;
+            for (int i = 0; i < loot_num; i++) {
+                int luck = random.nextInt(3) + 1;
+                if (luck == 1) {
+                    int loot = random.nextInt(weapon_names.length);
+                    int closed = 0;
+                    int h = 0;
+                    for (int c = 0; c < 6; c++) {
+                        if (weapon_name[c].equals("null")) {
+                            if (h == 0) {
+                                weapon_name[c] = weapon_names[loot];
+                                weapon_lvl[c] = checkDifficult() * (random.nextInt(2) + 1);
+                                weapon_dmg[c] = random.nextInt(weapon_stats[loot]) + 1 + weapon_lvl[c];
+                                weapon_class[c] = weapon_classes[loot];
+                                type[c] = types[loot];
+                                weapon_ids[c] = random.nextInt(200) + 1;
+                                for (int t = 0; t < 6; t++) {
+                                    if (weapon_ids[c] == weapon_ids[t]) {
+                                        weapon_ids[c] = random.nextInt(200) + 1;
+                                    }
                                 }
+                                System.out.println("                  Вы получили " + weapon_name[c]);
+                                h++;
                             }
-                            System.out.println("Вы получили " + weapon_name[c]);
-                            h++;
-                        }
-                    } else {
-                        closed++;
-                    }
-                    if (closed == 6) {
-                        System.out.println("У вас не хватает места в инвентаре. Введите номер предмета, который вы хотите заменить на " + weapon_names[loot] + ", либо напишите [n] для отказа.");
-                        showWeapons();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-                        enter();
-                        String input = reader.readLine();
-                        if (input.equals("n")) {
-                            System.out.println("Вы отказались от предмета.");
                         } else {
-                            int g = Integer.parseInt(input) - 1;
-                            weapon_name[g] = weapon_names[loot];
-                            weapon_lvl[g] = checkDifficult() * (random.nextInt(2) + 1);
-                            weapon_dmg[g] = random.nextInt(weapon_stats[loot]) + 1 + weapon_lvl[g];
-                            type[g] = types[loot];
-                            weapon_class[g] = weapon_classes[loot];
-                            weapon_ids[g] = random.nextInt(200) + 1;
-                            for (int t = 0; t < 6; t++) {
-                                if (weapon_ids[g] == weapon_ids[t]) {
-                                    weapon_ids[g] = random.nextInt(200) + 1;
-                                }
-                                weapon_lvl[g] = 1;
-                            }
-                            System.out.println("Вы получили " + weapon_name[g]);
+                            closed++;
                         }
-                    }
+                        if (closed == 6) {
+                            System.out.println("У вас не хватает места в инвентаре. Введите номер предмета, который вы хотите заменить на " + weapon_names[loot] + ", либо напишите [n] для отказа.");
+                            showWeapons();
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+                            enter();
+                            String input = reader.readLine();
+                            if (input.equals("n")) {
+                                System.out.println("                  Вы отказались от предмета.");
+                            } else {
+                                int g = Integer.parseInt(input) - 1;
+                                weapon_name[g] = weapon_names[loot];
+                                weapon_lvl[g] = checkDifficult() * (random.nextInt(2) + 1);
+                                weapon_dmg[g] = random.nextInt(weapon_stats[loot]) + 1 + weapon_lvl[g];
+                                type[g] = types[loot];
+                                weapon_class[g] = weapon_classes[loot];
+                                weapon_ids[g] = random.nextInt(200) + 1;
+                                for (int t = 0; t < 6; t++) {
+                                    if (weapon_ids[g] == weapon_ids[t]) {
+                                        weapon_ids[g] = random.nextInt(200) + 1;
+                                    }
+                                    weapon_lvl[g] = 1;
+                                }
+                                System.out.println("                  Вы получили " + weapon_name[g]);
+                            }
+                        }
 
-                }
-            } else if(luck == 2) {
-                int gr = random.nextInt(5) + 1;
-                gold += gr;
-                System.out.println("Найдена мелочь!");
-            } else {
-                int loot = random.nextInt(shield_names.length);
-                int closed = 0;
-                int h = 0;
-                for (int c = 0; c < 4; c++) {
-                    if (shield_name[c].equals("null")) {
-                        if (h == 0) {
-                            shield_name[c] = shield_names[loot];
-                            shield_hp[c] = random.nextInt(shield_hps[loot]) + 1;
-                            shield_stat[c] = random.nextInt(shield_stats[loot]) + 1;
-                            shield_ids[c] = random.nextInt(200) + 1;
-                            for (int t = 0; t < 4; t++) {
-                                if (shield_ids[c] == shield_ids[t]) {
-                                    shield_ids[c] = random.nextInt(200) + 1;
-                                }
-                            }
-                            System.out.println("Вы получили " + shield_name[c]);
-                            h++;
-                        }
-                    } else {
-                        closed++;
                     }
-                    if (closed == 4) {
-                        System.out.println("У вас не хватает места в инвентаре. Введите номер предмета, который вы хотите заменить на " + shield_names[loot] + ", либо напишите [n] для отказа.");
-                        showShields();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-                        enter();
-                        String input = reader.readLine();
-                        if (input.equals("n")) {
-                            System.out.println("Вы отказались от предмета.");
+                } else if (luck == 2) {
+                    int gr = random.nextInt(5) + 1;
+                    gold += gr;
+                    System.out.println("                       Найдена мелочь!");
+                } else {
+                    int loot = random.nextInt(shield_names.length);
+                    int closed = 0;
+                    int h = 0;
+                    for (int c = 0; c < 4; c++) {
+                        if (shield_name[c].equals("null")) {
+                            if (h == 0) {
+                                shield_name[c] = shield_names[loot];
+                                shield_hp[c] = random.nextInt(shield_hps[loot]) + 1;
+                                shield_stat[c] = random.nextInt(shield_stats[loot]) + 1;
+                                shield_ids[c] = random.nextInt(200) + 1;
+                                for (int t = 0; t < 4; t++) {
+                                    if (shield_ids[c] == shield_ids[t]) {
+                                        shield_ids[c] = random.nextInt(200) + 1;
+                                    }
+                                }
+                                System.out.println("                  Вы получили " + shield_name[c]);
+                                h++;
+                            }
                         } else {
-                            int g = Integer.parseInt(input) - 1;
-                            shield_name[g] = shield_names[loot];
-                            shield_stat[c] = random.nextInt(shield_stats[loot]) + 1;
-                            shield_hp[g] = random.nextInt(shield_hps[loot]) + 1;
-                            shield_ids[g] = random.nextInt(200) + 1;
-                            for (int t = 0; t < 4; t++) {
-                                if (shield_ids[g] == shield_ids[t]) {
-                                    shield_ids[g] = random.nextInt(200) + 1;
-                                }
-                            }
-                            System.out.println("Вы получили " + shield_name[g]);
+                            closed++;
                         }
-                    }
+                        if (closed == 4) {
+                            System.out.println("У вас не хватает места в инвентаре. Введите номер предмета, который вы хотите заменить на " + shield_names[loot] + ", либо напишите [n] для отказа.");
+                            showShields();
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+                            enter();
+                            String input = reader.readLine();
+                            if (input.equals("n")) {
+                                System.out.println("                  Вы отказались от предмета.");
+                            } else {
+                                int g = Integer.parseInt(input) - 1;
+                                shield_name[g] = shield_names[loot];
+                                shield_stat[c] = random.nextInt(shield_stats[loot]) + 1;
+                                shield_hp[g] = random.nextInt(shield_hps[loot]) + 1;
+                                shield_ids[g] = random.nextInt(200) + 1;
+                                for (int t = 0; t < 4; t++) {
+                                    if (shield_ids[g] == shield_ids[t]) {
+                                        shield_ids[g] = random.nextInt(200) + 1;
+                                    }
+                                }
+                                System.out.println("                  Вы получили " + shield_name[g]);
+                            }
+                        }
 
+                    }
                 }
+
+                selectMenu();
             }
-
+        } else {
             selectMenu();
         }
     }
@@ -688,7 +995,9 @@ public class SimpleRPG {
         if(a == 3) {
             inFight = 0;
         }
-
+        if(inFight == 1) {
+            Effects.checkPoison();
+        }
         if(inFight == 1) {
             int acc = 0;
             for(int s = 0; s < 3; s++) {
@@ -706,31 +1015,100 @@ public class SimpleRPG {
                             whatHero = random.nextInt(3);
                         } while (hero_name[whatHero].equals("null"));
 
-                        int res = turnEnemy(enemy_dmg[attack], hero_hp[whatHero], hero_name[whatHero], whatHero, enemy_name[attack]);
+                        int res = turnEnemy(enemy_dmg[attack], hero_hp[whatHero], hero_name[whatHero], whatHero, enemy_name[attack], attack);
                         hero_hp[whatHero] = res;
                     }
                 }
 
                 for(int t = 0; t < 3; t++) {
+                    if(!enemy_name[t].equals("null")) {
+                        enemy_nextAttack[t] = random.nextInt(enemy_dmg[t]) + 1;
+                    }
                     turns[t] = 0;
                 }
-                System.out.println(" ");
+                for(int g = 0; g < 3; g++) {
+                    hero_mana[g] += 5;
+                    if(hero_mana[g] > hero_maxMana[g]) {
+                        hero_mana[g] = hero_maxMana[g];
+                    }
+                }
+                if(Magic.bomb > 0) {
+                    Magic.bomb--;
+                    if(Magic.bomb == 0) {
+                        System.out.println("[Взрыв бомбы] Все враги получили " + (5 * (hero_dmg[Magic.bombSummoner] / 10)) + " урона." );
+                        for(int g = 0; g < 3; g++) {
+                            enemy_hp[g] -= 5 * (hero_dmg[Magic.bombSummoner] / 10);
+                            if(enemy_hp[g] <= 0) {
+                                int lvl_bust;
+
+                                if(SimpleRPG.checkDifficult() <= 1) {
+                                    lvl_bust = 3;
+                                } else if(SimpleRPG.checkDifficult() == 2) {
+                                    lvl_bust = 2;
+                                } else {
+                                    lvl_bust = 1;
+                                }
+                                int xp = SimpleRPG.enemy_lvl[g] * (random.nextInt(4) + 1) * lvl_bust;
+                                if(SimpleRPG.enemy_hp[g] <= 0) {
+                                    System.out.println(SimpleRPG.enemy_name[g] + " скончался от взрыва");
+                                    SimpleRPG.enemy_name[g] = "null";
+                                    System.out.println("Все герои получили " + xp + " опыта");
+                                    int scr = 0;
+                                    for (int i = 0; i < 3; i++) {
+                                        if (!SimpleRPG.hero_name[i].equals("null")) {
+                                            SimpleRPG.hero_xp[i] += xp;
+                                        }
+                                    }
+                                    for (int i = 0; i < 3; i++) {
+                                        if (SimpleRPG.enemy_name[i].equals("null")) {
+                                            scr++;
+                                        }
+                                    }
+
+                                    if (scr == 3) {
+                                        SimpleRPG.inFight = 0;
+                                        int luck = random.nextInt(3);
+                                        if (luck == 0) {
+                                            SimpleRPG.chests++;
+                                            System.out.println("У одного из павших врагов вы нашли ключ от сундука рядом с вами!");
+                                        } else if (luck == 1) {
+                                            System.out.println("У врагов в карманах пусто.");
+                                        } else {
+                                            int gold_luck = random.nextInt(5) + 1;
+                                            SimpleRPG.gold += gold_luck;
+                                            System.out.println("Вы нашли немного золота в карманах злодеев.");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                Replics.say();
                 System.out.println("Герои восстановили свои силы!");
             }
 
-            System.out.println("     [ Вы находитесь в комнате #" + room_count + " ]  ");
-            System.out.println("Меню действий:" + "        Мешок с золотом: " + gold + " золотых");
-            System.out.println(green + "1." + reset + "Следующая комната");
-            System.out.println(green + "2." + reset + "Выбрать героя");
+            System.out.println("                                  </События> ");
+
+            System.out.println("     [ Вы находитесь в комнате #" + room_count + " ]  " + "    Мешок с золотом: " + gold + " золотых");
+
+            System.out.println("{-----------------------------------------***------------------------------------------}");
+
+            System.out.println(floor(0));
+            System.out.println(floor(1));
+            System.out.println(floor(2));
+            System.out.println("{-----------------------------------------***------------------------------------------}");
+            System.out.print(green + "1." + reset + "Следующая комната  " + green + "2." + reset + "Выбрать героя  ");
             //System.out.println(turns_unto_reset);
             if(turns_unto_reset == -1) {
-                System.out.println(green + "3." + reset + "Попробовать откупиться " + "(" + pay_to_esc + " золотых)");
+                System.out.print(green + "3." + reset + "Попробовать откупиться " + "(" + pay_to_esc + " золотых)  ");
             } else {
-                System.out.println(green + "3." + reset + "Попробовать откупиться " + "(" + pay_to_esc + " золотых) | До обновления: " + (3 - turns_unto_reset) + " хода");
+                System.out.print(green + "3." + reset + "Попробовать откупиться " + "(" + pay_to_esc + " золотых) | До обновления: " + (3 - turns_unto_reset) + " хода   ");
             }
             if(chests >= 1) {
-                System.out.println(green + "4." + reset + "Открыть сундук");
+                System.out.print(green + "4." + reset + "Открыть сундук (" + chests + ")");
             }
+            System.out.println("");
 
             System.out.print("Ввод: ");
             int answer = Integer.parseInt(reader.readLine());
@@ -746,18 +1124,23 @@ public class SimpleRPG {
                 }
                 System.out.print("Ввод: ");
                 int thisHero = Integer.parseInt(reader.readLine()) - 1;
-                if(hero_name[thisHero].equals("null")){
-                    updateScreen();
-                    System.out.println("Выберите действующего героя.");
-                    selectMenu();
-                } else {
-                    if (turns[thisHero] == 1) {
+                if(thisHero == 0 || thisHero == 1 || thisHero == 2) {
+                    if (hero_name[thisHero].equals("null")) {
                         updateScreen();
-                        System.out.println("Этот герой должен восстановить силы.");
+                        System.out.println("Выберите действующего героя.");
                         selectMenu();
                     } else {
-                        heroSelectMenu(thisHero);
+                        if (turns[thisHero] == 1) {
+                            updateScreen();
+                            System.out.println("Этот герой должен восстановить силы.");
+                            selectMenu();
+                        } else {
+                            heroSelectMenu(thisHero);
+                        }
                     }
+                } else {
+                    updateScreen();
+                    selectMenu();
                 }
             } else if(answer == 3){
                 if (gold >= pay_to_esc) {
@@ -799,7 +1182,7 @@ public class SimpleRPG {
 
                             } else {
                                 switch (cause) {
-                                    case 0:
+                                    case 0 -> {
                                         updateScreen();
                                         System.out.println("Враги сочли ваше предложение проявлением трусости. Они стали более уверенны в своей победе. (их сила повышена)");
                                         for (int hj = 0; hj < 3; hj++) {
@@ -807,9 +1190,8 @@ public class SimpleRPG {
                                         }
                                         turns_unto_reset = 0;
                                         selectMenu();
-                                        break;
-
-                                    case 1:
+                                    }
+                                    case 1 -> {
                                         updateScreen();
                                         System.out.println("Врагам такая сумма показалась недостаточной. Они требуют всех ваших сбережений. (" + gold + ") Согласиться на их условие? (y/n)");
                                         String gegr = reader.readLine();
@@ -828,13 +1210,13 @@ public class SimpleRPG {
                                             selectMenu();
                                         }
                                         turns_unto_reset = 0;
-                                        break;
-
-                                    default:
+                                    }
+                                    default -> {
                                         updateScreen();
                                         System.out.println("Вражеская сторона ответила коротко и ясно: нет.");
                                         turns_unto_reset = 0;
                                         selectMenu();
+                                    }
                                 }
                             }
                         } else {
@@ -877,7 +1259,7 @@ public class SimpleRPG {
             System.out.println(green + "1." + reset + "Следующая комната");
             System.out.println(green + "2." + reset + "Выбрать героя");
             if(chests >= 1) {
-                System.out.println(green + "3." + reset + "Открыть сундук");
+                System.out.println(green + "3." + reset + "Открыть сундук(" + chests + ")");
             }
 
             System.out.print("Ввод: ");
@@ -893,11 +1275,16 @@ public class SimpleRPG {
                 }
                 System.out.print("Ввод: ");
                 int thisHero = Integer.parseInt(reader.readLine()) - 1;
-                if(turns[thisHero] == 1) {
-                    System.out.println("Этот герой должен восстановить силы.");
-                    selectMenu();
+                if(thisHero == 0 || thisHero == 1 || thisHero == 2) {
+                    if (turns[thisHero] == 1) {
+                        System.out.println("Этот герой должен восстановить силы.");
+                        selectMenu();
+                    } else {
+                        heroSelectMenu(thisHero);
+                    }
                 } else {
-                    heroSelectMenu(thisHero);
+                    updateScreen();
+                    selectMenu();
                 }
             } else {
                 openChest();
@@ -908,11 +1295,16 @@ public class SimpleRPG {
 
     public static void heroSelectMenu(int thisHero) throws IOException, InterruptedException {
         updateScreen();
+        heroTraits(thisHero);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         Random random = new Random();
         if(inFight == 1) {
             System.out.println("Меню персонажа:" +  "           Мешок с золотом: " + gold + " золотых         Выбран: " + hero_name[thisHero]);
-            System.out.println(green + "1." + reset + "Атаковать");
+            if(!type_eq[thisHero].equals("Лечение") && !type_eq[thisHero].equals("Магия")) {
+                System.out.println(green + "1." + reset + "Атаковать");
+            } else {
+                System.out.println(green + "1." + reset + "Магия");
+            }
             System.out.println(green + "2." + reset + "Подготовиться к атаке");
             System.out.println(green + "3." + reset + "Сменить снаряжение");
             System.out.println(green + "4." + reset + "Вернуться в меню действий");
@@ -927,7 +1319,7 @@ public class SimpleRPG {
 
                     System.out.println("Выберите врага для атаки:");
                     for (int i = 0; i < 3; i++) {
-                        thatEnemy(i);
+                        thatEnemy(i, true);
                     }
                     enter();
                     int choose = Integer.parseInt(reader.readLine()) - 1;
@@ -941,42 +1333,59 @@ public class SimpleRPG {
                     // int hero_dmg, int enemy_hp, String hero_name1, String enemy_name1, int hero, int enemy
                     int[] turn_result = turnHero(hero_dmg[thisHero], enemy_hp[choose], hero_name[thisHero], enemy_name[choose], thisHero, choose);
                     turns[thisHero] = 1;
+                    //todo
                     enemy_hp[choose] = turn_result[0];
                 } else if(type_eq[thisHero].equals("Лечение")){
-                    System.out.println("Выберите персонажа для лечения:");
-                    for (int i = 0; i < 3; i++) {
-                        thatHero(i);
-                    }
-                    enter();
+                    int num = 0;
 
-                    int choose = Integer.parseInt(reader.readLine()) - 1;
-                    int hp = random.nextInt(hero_dmg[thisHero]) + 1;
-
-                    hero_hp[choose] += hp;
-                    if(hero_hp[choose] > hero_maxHp[choose]) {
-                        hero_hp[choose] = hero_maxHp[choose];
+                    for(int i = 0; i < 6; i++) {
+                        if(weapon_id[thisHero] == weapon_ids[i]) {
+                            num = i;
+                        }
                     }
-                    turns[thisHero] = 1;
-                    System.out.println("Персонаж " + hero_name[thisHero] + " исцелил раны " + hero_name[choose] + " на [" + hp + "] оз.");
+                    if (hero_mana[thisHero] >= cost(thisHero, 10)) {
+                        System.out.println("Выберите персонажа для лечения:" + "Цена:" + cost(thisHero, 10) + " маны");
+                        for (int i = 0; i < 3; i++) {
+                            thatHero(i);
+                        }
+                        enter();
+
+                        int choose = Integer.parseInt(reader.readLine()) - 1;
+                        int hp = (random.nextInt(hero_dmg[thisHero]) + 1) * hero_lvl[thisHero];
+                        hero_mana[thisHero] -= cost(thisHero, 10);
+                        hero_hp[choose] += hp;
+                        if (hero_hp[choose] > hero_maxHp[choose]) {
+                            hero_hp[choose] = hero_maxHp[choose];
+                        }
+                        turns[thisHero] = 1;
+                        updateScreen();
+                        System.out.println("Персонаж " + hero_name[thisHero] + " исцелил раны " + hero_name[choose] + " на [" + hp + "] оз.");
+                    } else {
+                        updateScreen();
+                        System.out.println("Недостаточно маны!" + "   Цена:" + cost(thisHero, 10) + " маны");
+                    }
                 } else if(type_eq[thisHero].equals("Дальний")){
                     System.out.println("Выберите врага для атаки:");
                     for (int i = 0; i < 3; i++) {
-                        thatEnemy(i);
+                        thatEnemy(i, true);
                     }
                     enter();
                     int choose = Integer.parseInt(reader.readLine()) - 1;
 
-                    /*
+
                     int whatHero;
 
                     do {
                         whatHero = random.nextInt(3);
                     } while (hero_name[whatHero].equals("null"));
-                    */
+
 
                     int[] turn_result = turnHero(hero_dmg[thisHero], enemy_hp[choose], hero_name[thisHero], enemy_name[choose], thisHero, choose);;
                     turns[thisHero] = 1;
                     enemy_hp[choose] = turn_result[0];
+                } else if(type_eq[thisHero].equals("Магия")){
+                    //todo Магия, доделать книгу с магией
+                    Magic.magics(thisHero);
                 }
                 selectMenu();
 
@@ -1102,6 +1511,7 @@ public class SimpleRPG {
                 selectMenu();
 
             } else {
+                updateScreen();
                 selectMenu();
             }
 
