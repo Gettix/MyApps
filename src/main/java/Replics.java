@@ -53,6 +53,8 @@ public class Replics {
                 System.out.println(SimpleRPG.hero_name[whatHero] + ambitious[phrase]);
             } else if(SimpleRPG.hero_nature[whatHero].equals("Паучный")) {
                 System.out.println(SimpleRPG.hero_name[whatHero] + " издает звуки *пщвоуп ползь ползь*");
+            } else if(SimpleRPG.hero_nature[whatHero].equals("Зомбячный")) {
+                System.out.println(SimpleRPG.hero_name[whatHero] + " произносит *арххххх хххмммммррр*");
             }
         }
     }

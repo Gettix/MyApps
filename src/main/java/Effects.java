@@ -47,6 +47,7 @@ public class Effects {
                     int xp = SimpleRPG.enemy_lvl[h] * (random.nextInt(4) + 1) * lvl_bust;
                     if(SimpleRPG.enemy_hp[h] <= 0) {
                         System.out.println(SimpleRPG.enemy_name[h] + " скончался от отравления");
+                        SimpleRPG.enemy_deaths++;
                         poisoned_enemy[h] = 0;
                         SimpleRPG.enemy_name[h] = "null";
                         System.out.println("Все герои получили " + xp + " опыта");
