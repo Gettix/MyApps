@@ -551,12 +551,12 @@ public class SimpleRPG {
             if (equipped[id].equals("null")) {
                 System.out.println(color + (id + 1) + ". " + hero_name[id] + reset  + " Оружие:Руки" + " Класс:" + hero_class[id] + " Уровень:" + hero_lvl[id] + " (" + hero_xp[id] + "/" + (30 * hero_lvl[id]) + ")   " + s);
                 if(Effects.getPoisoned_hero()[id] != 0) {
-                    System.out.print(" [Отравлен]");
+                    System.out.print(" [%]");
                 }
             } else {
                 System.out.println(color + (id + 1) + ". " + hero_name[id] + reset + " Оружие:" + equipped[id] + " Класс:" + hero_class[id] + " Уровень:" + hero_lvl[id] +  " (" + hero_xp[id] + "/" + (30 * hero_lvl[id]) + ")   " + s);
                 if(Effects.getPoisoned_hero()[id] != 0) {
-                    System.out.print(" [Отравлен]");
+                    System.out.print(" [%]");
                 }
             }
         }
@@ -593,13 +593,13 @@ public class SimpleRPG {
             }
             if (equipped[id].equals("null")) {
                 if (Effects.getPoisoned_hero()[id] != 0) {
-                    line = hero_yellow + color + (id + 1) + ". " + hero_name[id] + reset + " Оружие:Руки" + " Класс:" + hero_class[id] + " Уровень:" + hero_lvl[id] + " (" + hero_xp[id] + "/" + (30 * hero_lvl[id]) + ")   " + " [Отравлен]";
+                    line = hero_yellow + color + (id + 1) + ". " + hero_name[id] + reset + " Оружие:Руки" + " Класс:" + hero_class[id] + " Уровень:" + hero_lvl[id] + " (" + hero_xp[id] + "/" + (30 * hero_lvl[id]) + ")   " + " [%]";
                 } else {
                     line = hero_yellow + color + (id + 1) + ". " + hero_name[id] + reset + " Оружие:Руки" + " Класс:" + hero_class[id] + " Уровень:" + hero_lvl[id] + " (" + hero_xp[id] + "/" + (30 * hero_lvl[id]) + ")   ";
                 }
             } else {
                 if (Effects.getPoisoned_hero()[id] != 0) {
-                    line = hero_yellow + color + (id + 1) + ". " + hero_name[id] + reset + " Оружие:" + equipped[id] + " Класс:" + hero_class[id] + " Уровень:" + hero_lvl[id] + " (" + hero_xp[id] + "/" + (30 * hero_lvl[id]) + ")   " + " [Отравлен]";
+                    line = hero_yellow + color + (id + 1) + ". " + hero_name[id] + reset + " Оружие:" + equipped[id] + " Класс:" + hero_class[id] + " Уровень:" + hero_lvl[id] + " (" + hero_xp[id] + "/" + (30 * hero_lvl[id]) + ")   " + " [%]";
                 } else {
                     line = hero_yellow + color + (id + 1) + ". " + hero_name[id] + reset + " Оружие:" + equipped[id] + " Класс:" + hero_class[id] + " Уровень:" + hero_lvl[id] + " (" + hero_xp[id] + "/" + (30 * hero_lvl[id]) + ")   ";
                 }
@@ -628,7 +628,7 @@ public class SimpleRPG {
                 willkick = " Нанесёт: " + enemy_nextAttack[id] + " урона.";
             }
             if (Effects.getPoisoned_enemy()[id] != 0) {
-                poisn = "[Отравлен]";
+                poisn = "[%]";
             }
             line2 = enemy_red + enemy_dark + (id + 1) + ". " + enemy_name[id] + reset + " Урон:" + enemy_dmg[id] + " Уровень:" + enemy_lvl[id] + willkick + poisn + "  ";
 

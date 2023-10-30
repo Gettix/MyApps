@@ -20,23 +20,23 @@ public class Magic {
 
         // Показать заклинания, подходящие по уровню
 
-        if(summonSpider_lvl == SimpleRPG.hero_lvl[thisHero]) {
+        if(summonSpider_lvl <= SimpleRPG.hero_lvl[thisHero]) {
             System.out.println("[f] Призвать паука - " + SimpleRPG.cost(thisHero, 20) + " маны");
 
         }
-        if(explosionBomb_lvl == SimpleRPG.hero_lvl[thisHero]) {
+        if(explosionBomb_lvl <= SimpleRPG.hero_lvl[thisHero]) {
             System.out.println("[g] Бросить магическую бомбу - " + SimpleRPG.cost(thisHero, 15) + " маны");
 
         }
-        if(summonZombie_lvl == SimpleRPG.hero_lvl[thisHero]) {
+        if(summonZombie_lvl <= SimpleRPG.hero_lvl[thisHero]) {
             System.out.println("[r] Призвать зомби - " + SimpleRPG.cost(thisHero, 25) + " маны");
 
         }
-        if(toxicCloud_lvl == SimpleRPG.hero_lvl[thisHero]) {
+        if(toxicCloud_lvl <= SimpleRPG.hero_lvl[thisHero]) {
             System.out.println("[t] Вызвать ядовитое облако - " + SimpleRPG.cost(thisHero, 20) + " маны");
 
         }
-        if(paralysis_lvl == SimpleRPG.hero_lvl[thisHero]) {
+        if(paralysis_lvl <= SimpleRPG.hero_lvl[thisHero]) {
             System.out.println("[y] Вызвать паралич - " + SimpleRPG.cost(thisHero, 15) + " маны");
 
         }
